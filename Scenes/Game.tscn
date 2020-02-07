@@ -1,0 +1,247 @@
+[gd_scene load_steps=21 format=2]
+
+[ext_resource path="res://Scripts/Camera.gd" type="Script" id=1]
+[ext_resource path="res://Scripts/Player.gd" type="Script" id=2]
+[ext_resource path="res://Scripts/ChargeBar.gd" type="Script" id=3]
+[ext_resource path="res://Scenes/Platform.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Blue.png" type="Texture" id=5]
+[ext_resource path="res://Scripts/PlatformManager.gd" type="Script" id=6]
+[ext_resource path="res://Scripts/PlayerMesh.gd" type="Script" id=7]
+[ext_resource path="res://m5x7.tres" type="DynamicFont" id=8]
+[ext_resource path="res://WallMaterial.tres" type="Material" id=9]
+[ext_resource path="res://m5x7.ttf" type="DynamicFontData" id=10]
+[ext_resource path="res://default_env.tres" type="Environment" id=11]
+[ext_resource path="res://Scripts/GameOver.gd" type="Script" id=12]
+[ext_resource path="res://Scripts/Tutorial.gd" type="Script" id=13]
+
+[sub_resource type="BoxShape" id=1]
+
+[sub_resource type="CubeMesh" id=2]
+material = ExtResource( 9 )
+
+[sub_resource type="BoxShape" id=3]
+
+[sub_resource type="SphereShape" id=4]
+
+[sub_resource type="SphereMesh" id=5]
+
+[sub_resource type="SpatialMaterial" id=6]
+flags_transparent = true
+albedo_color = Color( 0, 1, 0.392157, 0.92549 )
+
+[sub_resource type="DynamicFont" id=7]
+size = 192
+outline_color = Color( 0, 1, 0.392157, 1 )
+font_data = ExtResource( 10 )
+
+[node name="Spatial" type="Spatial"]
+
+[node name="Walls" type="Spatial" parent="."]
+
+[node name="BottomWall" type="StaticBody" parent="Walls"]
+transform = Transform( 20, 0, 0, 0, 15, 0, 0, 0, 1, 0, -15, 0 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Walls/BottomWall"]
+shape = SubResource( 1 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Walls/BottomWall"]
+use_in_baked_light = true
+mesh = SubResource( 2 )
+material/0 = null
+
+[node name="Tutorial" type="Label" parent="Walls/BottomWall"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -447.0
+margin_top = -820.0
+margin_right = 447.0
+margin_bottom = -439.0
+grow_horizontal = 2
+grow_vertical = 0
+custom_fonts/font = ExtResource( 8 )
+text = "Hold one finger to aim,
+and a second one to charge.
+
+Let go to launch."
+align = 1
+valign = 1
+script = ExtResource( 13 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Camera" type="Camera" parent="Walls"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.07074, 39.095 )
+script = ExtResource( 1 )
+
+[node name="LeftWall" type="StaticBody" parent="Walls/Camera"]
+transform = Transform( 20, 0, 0, 0, 40, 0, 0, 0, 1, -31, -1.071, -39.095 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Walls/Camera/LeftWall"]
+shape = SubResource( 3 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Walls/Camera/LeftWall"]
+use_in_baked_light = true
+mesh = SubResource( 2 )
+material/0 = null
+
+[node name="RightWall" type="StaticBody" parent="Walls/Camera"]
+transform = Transform( 20, 0, 0, 0, 40, 0, 0, 0, 1, 31, -1.071, -39.095 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Walls/Camera/RightWall"]
+shape = SubResource( 3 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Walls/Camera/RightWall"]
+use_in_baked_light = true
+mesh = SubResource( 2 )
+material/0 = null
+
+[node name="Player" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.068, 0 )
+gravity_scale = 8.0
+contacts_reported = 1
+contact_monitor = true
+axis_lock_linear_z = true
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+script = ExtResource( 2 )
+CHARGE_SPEED = 12.0
+charge_easing = 0.196146
+
+[node name="CollisionShape" type="CollisionShape" parent="Player"]
+shape = SubResource( 4 )
+
+[node name="PlayerMesh" type="MeshInstance" parent="Player"]
+mesh = SubResource( 5 )
+material/0 = SubResource( 6 )
+script = ExtResource( 7 )
+
+[node name="Tween" type="Tween" parent="Player/PlayerMesh"]
+
+[node name="ChargeBar" type="TextureProgress" parent="Player"]
+margin_left = 50.0
+margin_top = -13.0
+margin_right = 150.0
+margin_bottom = 12.0
+rect_pivot_offset = Vector2( -50, 12.5 )
+value = 100.0
+texture_progress = ExtResource( 5 )
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VisibilityNotifier" type="VisibilityNotifier" parent="Player"]
+
+[node name="PlatformManager" type="Spatial" parent="."]
+script = ExtResource( 6 )
+
+[node name="Platform" parent="PlatformManager" instance=ExtResource( 4 )]
+transform = Transform( 3, 0, 0, 0, 0.5, 0, 0, 0, 1, -3.216, 6.897, 0 )
+
+[node name="Platform2" parent="PlatformManager" instance=ExtResource( 4 )]
+transform = Transform( 2.033, 0, 0, 0, 0.5, 0, 0, 0, 1, 6.34314, 13.3038, 0 )
+
+[node name="Platform3" parent="PlatformManager" instance=ExtResource( 4 )]
+transform = Transform( 2.567, 0, 0, 0, 0.5, 0, 0, 0, 1, -4.453, 17.262, 0 )
+
+[node name="Platform4" parent="PlatformManager" instance=ExtResource( 4 )]
+transform = Transform( 3.53, 0, 0, 0, 0.5, 0, 0, 0, 1, 5.89799, 26.0966, -0.0146942 )
+
+[node name="Platform5" parent="PlatformManager" instance=ExtResource( 4 )]
+transform = Transform( 3, 0, 0, 0, 0.5, 0, 0, 0, 1, -3.20508, 34.7517, 0 )
+
+[node name="Platform6" parent="PlatformManager" instance=ExtResource( 4 )]
+transform = Transform( 3, 0, 0, 0, 0.5, 0, 0, 0, 1, 9.21316, 42.4579, 0 )
+
+[node name="Platform7" parent="PlatformManager" instance=ExtResource( 4 )]
+transform = Transform( 3, 0, 0, 0, 0.5, 0, 0, 0, 1, -0.0697713, 49.3922, 0 )
+
+[node name="Platform8" parent="PlatformManager" instance=ExtResource( 4 )]
+transform = Transform( 3, 0, 0, 0, 0.5, 0, 0, 0, 1, -9.33965, 57.1331, 0 )
+
+[node name="Platform9" parent="PlatformManager" instance=ExtResource( 4 )]
+transform = Transform( 3, 0, 0, 0, 0.5, 0, 0, 0, 1, -0.387041, 63.0327, 0 )
+
+[node name="Platform10" parent="PlatformManager" instance=ExtResource( 4 )]
+transform = Transform( 3, 0, 0, 0, 0.5, 0, 0, 0, 1, -4.04188, 68.6362, 0 )
+
+[node name="HighScore" type="Label" parent="."]
+margin_left = 10.0
+margin_right = 967.0
+margin_bottom = 76.0
+custom_fonts/font = ExtResource( 8 )
+text = "HighScore: "
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Score" type="Label" parent="."]
+margin_left = 13.0
+margin_top = 64.0
+margin_right = 895.0
+margin_bottom = 397.0
+custom_fonts/font = ExtResource( 8 )
+text = "Score: "
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="GameOver" type="Label" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = 2000.0
+grow_horizontal = 2
+grow_vertical = 2
+custom_fonts/font = SubResource( 7 )
+custom_colors/font_color = Color( 0, 1, 0.392157, 1 )
+text = "Game Over"
+align = 1
+valign = 1
+uppercase = true
+script = ExtResource( 12 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Tween" type="Tween" parent="GameOver"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="GameOver"]
+environment = ExtResource( 11 )
+
+[node name="Timer" type="Timer" parent="GameOver"]
+wait_time = 3.0
+one_shot = true
+
+[node name="UpperRect" type="ColorRect" parent="."]
+anchor_top = -0.12
+anchor_right = 1.0
+anchor_bottom = -0.035
+margin_left = -818.0
+margin_top = 0.399994
+margin_right = 684.0
+color = Color( 0, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LowerRect" type="ColorRect" parent="."]
+anchor_top = 1.001
+anchor_right = 1.0
+anchor_bottom = 1.1
+margin_left = -789.0
+margin_top = 0.0799561
+margin_right = 746.0
+margin_bottom = 40.0
+color = Color( 0, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="screen_exited" from="Player/VisibilityNotifier" to="Player" method="_on_VisibilityNotifier_screen_exited"]
+[connection signal="timeout" from="GameOver/Timer" to="GameOver" method="_on_Timer_timeout"]
