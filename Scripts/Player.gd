@@ -48,14 +48,14 @@ func _process(delta):
 			charge_bar.rect_rotation = clamp(charge_bar.rect_rotation, 180, 360)
 			flipAngleVel()
 			
-	set_score()		
-	if charge_bar.value >= 0:
-		charge_bar.value += gravity_scale * CHARGE_SPEED * delta * (1 if charging else -1)
+	set_score()
+	charge_bar.value = max(0, charge_bar.value + 8 * CHARGE_SPEED * delta * (1 if charging else -1))
 
 func jump():
 	var direction = Vector3.RIGHT.rotated(Vector3.FORWARD, deg2rad(charge_bar.rect_rotation - 360))
-	apply_impulse(Vector3.ZERO, charge_bar.value * direction)
+	apply_impulse(Vector3.ZERO, max(0, charge_bar.value) * direction)
 	charge_bar.value = 0
+	charge_bar.min_value = 0
 	flipAngleVel()
 
 func _input(event):
@@ -65,6 +65,8 @@ func _input(event):
 				aiming = event.is_pressed()
 				if !event.is_pressed():
 					jump()
+				else:
+					charge_bar.min_value = -5
 			BUTTON_RIGHT:
 				charging = event.is_pressed()
 	elif can_play and event is InputEventScreenTouch:
