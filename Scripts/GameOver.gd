@@ -6,7 +6,10 @@ onready var upper_rect = $".."/UpperRect
 onready var lower_rect = $".."/LowerRect
 
 func game_over():
-	tween.interpolate_property(self, "margin_left", 2000, 0, 1.5, Tween.TRANS_QUAD, Tween.EASE_IN_OUT, 0.5)
+	visible = true
+	margin_left = get_viewport().size.x * 2 + rect_size.x + 100
+	
+	tween.interpolate_property(self, "margin_left", margin_left, 0, 1.5, Tween.TRANS_QUAD, Tween.EASE_IN_OUT, 0.5)
 	tween.interpolate_property($".."/UpperRect, "margin_bottom", 0, 375, 1.25, Tween.TRANS_QUAD, Tween.EASE_IN_OUT, 0.5)
 	tween.interpolate_property($".."/LowerRect, "margin_top", 0, -375, 1.25, Tween.TRANS_QUAD, Tween.EASE_IN_OUT, 0.5)
 	tween.start()
