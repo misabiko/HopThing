@@ -56,29 +56,33 @@ func jump():
 	apply_impulse(Vector3.ZERO, max(0, charge_bar.value) * direction)
 	charge_bar.value = 0
 	charge_bar.min_value = 0
-	flipAngleVel()
 
 func _input(event):
 	if can_play and event is InputEventMouseButton:
 		match event.button_index:
 			BUTTON_LEFT:
-				aiming = event.is_pressed()
-				if !event.is_pressed():
-					jump()
-				else:
-					charge_bar.min_value = -5
+				on_first_button(event)
 			BUTTON_RIGHT:
-				charging = event.is_pressed()
+				on_second_button(event)
 	elif can_play and event is InputEventScreenTouch:
 		match event.index:
 			0:
-				aiming = event.is_pressed()
-				if !event.is_pressed():
-					jump()
+				on_first_button(event)
 			1:
-				charging = event.is_pressed()
+				on_second_button(event)
 	#elif event is InputEventMouseMotion:
 	#	charge_bar.value = charge_bar.max_value * ease(1 - event.position.y / get_viewport().size.y, charge_easing)
+
+func on_first_button(event):
+	aiming = event.is_pressed()
+	if !event.is_pressed():
+		jump()
+	else:
+		charge_bar.min_value = -5
+		flipAngleVel()
+
+func on_second_button(event):
+	charging = event.is_pressed()
 
 func flipAngleVel():
 	angleVel = -angleVel
